@@ -28,4 +28,14 @@ public final class Password {
     public String getStatus() {
         return status;
     }
+
+    @Override
+    public String toString() {
+        return "Password{" +
+               "id=" + id +
+               ", hashedPassword='" + hashedPassword + '\'' +
+               ", cleartextPassword='" + cleartextPassword + '\'' +
+               ", status='" + status + '\'' +
+               '}';
+    }
 }

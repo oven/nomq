@@ -1,6 +1,6 @@
 package no.kantega;
 
-import static no.kantega.App.sleepRandom;
+import static no.kantega.Util.sleepRandom;
 
 public class PasswordCracker {
 

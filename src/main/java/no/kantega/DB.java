@@ -17,7 +17,8 @@ public class DB {
                 PreparedStatement statement = prepareStatement(connection, query, params);
                 ResultSet resultSet = statement.executeQuery()
         ) {
-            return resultSet.next() ? (T) resultSet.getObject(1) : null;
+            resultSet.next();
+            return (T) resultSet.getObject(1);
         }
     }
 
