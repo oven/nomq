@@ -1,25 +1,8 @@
 # NoMQ
 
-# The problem
-
-- Task queue: jobs arrive, process asynchronously 
-- scheduled task in a cluster of n nodes, only one at the time
-
-# The most common solution
-
-
-
-# Postgres advisory locks
-
-# Our solution
-
-# Demo 
-
-Agenda
-
-1. Synkronisering mellom noder
-2. Meldingskø
-
+## Agenda
+1. Synkronisering mellom noder, kun én node av gangen
+2. Meldingskø point - to - point, ikke topic. 
 
 ## Synkronisering mellom noder
 
@@ -55,35 +38,4 @@ alle noder:
 7. printQueueLength(executor.getQueue().size())
 8. kjør, se at det snurrer, men den tar alle passordene
 9. bare kjør jobben hvis queueLength < 10
-10. kjør, se at den tømmer tabellen etterhvert og 
-
-```
-pg[_try]_advisory[_xact]_lock[_shared]
-    ^- ikke vent     ^            ^- ikke ekslusiv
-                     `- i transaksjon   
-                  
-```
-
-```java
-ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
-            printQueueLength(executorService.getQueue().size());
-
-if (executorService.getQueue().size() < 10) {
-try (Connection connection = datasource.getConnection()) {
-boolean gotLock = queryForObject(connection, "select pg_try_advisory_xact_lock(?)", PASSWORD_JOB_ID);
-System.out.println(gotLock ? " 🔓" : " 🔐");
-
-                    if (gotLock) {
-                        List<Password> passwords = queryForList(connection, "select * from password where status = 'todo' limit 30", new PasswordRowMapper());
-
-                        for (Password password : passwords) {
-                            executorService.submit(new CrackPasswordJob(password));
-                            executeUpdate(connection, "update password set status = 'in_progress' where id = ?", password.getId());
-                        }
-                    }
-
-                    sleepRandom(500, 1500);
-                    connection.commit();
-                }
-            }
-```
+10. kjør, se at den tømmer tabellen etterhvert 
